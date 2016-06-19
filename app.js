@@ -4,6 +4,7 @@ window.onload = function () {
   var ctx = canvas.getContext('2d');
 
   // define global variables
+  var ballFillColor = '#0095DD';
   var leftPressed = false;
   var rightPressed = false;
   var paddleHeight = 10;
@@ -19,6 +20,12 @@ window.onload = function () {
   var randomG = Math.floor(Math.random()*255);
   var randomB = Math.floor(Math.random()*255);
 
+  function randomizeColors() {
+    randomR = Math.floor(Math.random()*255);
+    randomG = Math.floor(Math.random()*255);
+    randomB = Math.floor(Math.random()*255);
+  }
+
   function drawPaddle (){
     ctx.beginPath();
     ctx.rect(paddleX,canvas.height-paddleHeight, paddleWidth, paddleHeight);
@@ -30,6 +37,7 @@ window.onload = function () {
   function drawBall() {
     ctx.beginPath();
     ctx.arc(x,y,ballRadius,0, Math.PI*2);
+    ctx.fillStyle = ballFillColor;
     ctx.fill();
     ctx.closePath();
   }
@@ -56,20 +64,27 @@ window.onload = function () {
     ctx.clearRect(0,0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
-    if (y+dy < ballRadius || y+dy > canvas.height - ballRadius){
-      randomR = Math.floor(Math.random()*255);
-      randomG = Math.floor(Math.random()*255);
-      randomB = Math.floor(Math.random()*255);
+    if (y+dy < ballRadius){
+      randomizeColors();
+      ballFillColor = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
       dy = -dy;
-      ctx.fillStyle = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
+    } else if(y+dy > canvas.height - ballRadius) {
+      if (x > paddleX && x < paddleX + paddleWidth) {
+        randomizeColors();
+        ballFillColor = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
+        dy = -dy; // dy = -dy*1.1; 
+        // dx = dx*1.1; // make ball go faster
+      } else {
+        // dy = -dy; // hide this when ready
+        alert('GAME OVER!');
+        document.location.reload();
+      }
     }
 
     if (x+dx < ballRadius || x+dx > canvas.width - ballRadius){
-      randomR = Math.floor(Math.random()*255);
-      randomG = Math.floor(Math.random()*255);
-      randomB = Math.floor(Math.random()*255);
+      randomizeColors();
+      ballFillColor = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
       dx = -dx;
-      ctx.fillStyle = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
     }
 
     if (rightPressed && paddleX < canvas.width-paddleWidth) {
