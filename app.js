@@ -4,6 +4,13 @@ window.onload = function () {
   var ctx = canvas.getContext('2d');
 
   // define global variables
+  var brickRowCount = 3;
+  var brickColumnCount = 5;
+  var brickWidth = 75;
+  var brickHeight = 20;
+  var brickPadding = 10;
+  var brickOffsetTop = 30;
+  var brickOffsetLeft = 30;
   var ballFillColor = '#0095DD';
   var leftPressed = false;
   var rightPressed = false;
@@ -19,6 +26,31 @@ window.onload = function () {
   var randomR = Math.floor(Math.random()*255);
   var randomG = Math.floor(Math.random()*255);
   var randomB = Math.floor(Math.random()*255);
+  var bricks = [];
+
+  // looping thru bricks array to create brick objects
+  for(var c=0; c<brickColumnCount; c++){
+    bricks[c]=[];
+    for (var r = 0; r < brickRowCount; r++) {
+      bricks[c][r] = {x: 0, y: 0};
+    }
+  }
+
+  function drawBricks(){
+    for(var c=0; c<brickColumnCount; c++){
+      for (var r = 0; r < brickRowCount; r++) {
+        var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+        var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+        bricks[c][r].x = brickX;
+        bricks[c][r].y = brickY;
+        ctx.beginPath();
+        ctx.rect(brickX,brickY,brickWidth, brickHeight);
+        ctx.fillStyle = '#0095DD';
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+  }
 
   function randomizeColors() {
     randomR = Math.floor(Math.random()*255);
@@ -64,6 +96,7 @@ window.onload = function () {
     ctx.clearRect(0,0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
+    drawBricks();
     if (y+dy < ballRadius){
       randomizeColors();
       ballFillColor = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
@@ -72,7 +105,7 @@ window.onload = function () {
       if (x > paddleX && x < paddleX + paddleWidth) {
         randomizeColors();
         ballFillColor = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
-        dy = -dy; // dy = -dy*1.1; 
+        dy = -dy; // dy = -dy*1.1;
         // dx = dx*1.1; // make ball go faster
       } else {
         // dy = -dy; // hide this when ready
