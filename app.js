@@ -143,6 +143,8 @@ window.onload = function () {
     drawScore();
     drawLives();
     collisionDetection();
+
+    // wall, floor, and paddle collison detection
     if (y+dy < ballRadius){
       randomizeColors();
       ballFillColor = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
@@ -154,7 +156,7 @@ window.onload = function () {
         dy = -dy; // dy = -dy*1.1;
         // dx = dx*1.1; // make ball go faster
       } else {
-        // dy = -dy; // hide this when ready
+        // lives update
         lives--;
         if(!lives) {
             alert("GAME OVER");
@@ -170,27 +172,33 @@ window.onload = function () {
       }
     }
 
+    // side walls collison detection
     if (x+dx < ballRadius || x+dx > canvas.width - ballRadius){
       randomizeColors();
       ballFillColor = 'rgb(' + randomR + ',' + randomG + ',' + randomB + ')';
       dx = -dx;
     }
 
+    // paddle movement update based on keyboard presses
     if (rightPressed && paddleX < canvas.width-paddleWidth) {
       paddleX += 7;
     } else if(leftPressed && paddleX > 0) {
       paddleX -= 7;
     }
 
+    // ball speed update
     x += dx;
     y += dy;
 
+    // better than setInterval for continuously drawing canvas
     requestAnimationFrame(draw);
   }
 
+  // event handlers
   document.addEventListener("mousemove", mouseMoveHandler, false);
   document.addEventListener('keydown', keyDownHandler, false);
   document.addEventListener('keyup', keyUpHandler, false);
-  // draw loop
+
+  // draw loop call
   draw();
 };
