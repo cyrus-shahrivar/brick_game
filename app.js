@@ -4,6 +4,7 @@ window.onload = function () {
   var ctx = canvas.getContext('2d');
 
   // define global variables
+  var lives = 3;
   var score = 0;
   var brickRowCount = 3;
   var brickColumnCount = 5;
@@ -35,6 +36,12 @@ window.onload = function () {
     for (var r = 0; r < brickRowCount; r++) {
       bricks[c][r] = {x: 0, y: 0, status: 1};
     }
+  }
+
+  function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
   }
 
   function drawScore() {
@@ -118,7 +125,7 @@ window.onload = function () {
             score++;
             if(score == brickRowCount*brickColumnCount){
                 alert("YOU WIN, CONGRATULATIONS");
-                document.location.reload();waw
+                document.location.reload();
             }
           }
         }
@@ -134,6 +141,7 @@ window.onload = function () {
     drawBall();
     drawPaddle();
     drawScore();
+    drawLives();
     collisionDetection();
     if (y+dy < ballRadius){
       randomizeColors();
@@ -147,8 +155,18 @@ window.onload = function () {
         // dx = dx*1.1; // make ball go faster
       } else {
         // dy = -dy; // hide this when ready
-        alert('GAME OVER!');
-        document.location.reload();
+        lives--;
+        if(!lives) {
+            alert("GAME OVER");
+            document.location.reload();
+        }
+        else {
+            x = canvas.width/2;
+            y = canvas.height-30;
+            dx = 2;
+            dy = -2;
+            paddleX = (canvas.width-paddleWidth)/2;
+        }
       }
     }
 
