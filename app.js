@@ -4,6 +4,7 @@ window.onload = function () {
   var ctx = canvas.getContext('2d');
 
   // define global variables
+  var score = 0;
   var brickRowCount = 3;
   var brickColumnCount = 5;
   var brickWidth = 75;
@@ -34,6 +35,12 @@ window.onload = function () {
     for (var r = 0; r < brickRowCount; r++) {
       bricks[c][r] = {x: 0, y: 0, status: 1};
     }
+  }
+
+  function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: "+score, 8, 20);
   }
 
   function drawBricks(){
@@ -99,8 +106,13 @@ window.onload = function () {
         //calculations
         if(b.status == 1){
           if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
-                  dy = -dy;
-                  b.status = 0;
+            dy = -dy;
+            b.status = 0;
+            score++;
+            if(score == brickRowCount*brickColumnCount){
+                alert("YOU WIN, CONGRATULATIONS");
+                document.location.reload();waw
+            }
           }
         }
       }
@@ -114,6 +126,7 @@ window.onload = function () {
     drawBricks();
     drawBall();
     drawPaddle();
+    drawScore();
     collisionDetection();
     if (y+dy < ballRadius){
       randomizeColors();
@@ -146,10 +159,12 @@ window.onload = function () {
 
     x += dx;
     y += dy;
+
+    requestAnimationFrame(draw);
   }
 
   document.addEventListener('keydown', keyDownHandler, false);
   document.addEventListener('keyup', keyUpHandler, false);
   // draw loop
-  setInterval(draw,10);
+  draw();
 };
